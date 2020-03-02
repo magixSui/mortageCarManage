@@ -41,6 +41,10 @@
                 <el-table-column prop="title" label="名称"></el-table-column>
                 <el-table-column prop="price" label="价格"></el-table-column>
                 <el-table-column prop="drive" label="驱动"></el-table-column>
+                <el-table-column prop="displacement" label="排量"></el-table-column>
+                <el-table-column prop="mileage" label="里程"></el-table-column>
+                <el-table-column prop="type" label="类型"></el-table-column>
+                <el-table-column prop="date" label="年份"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <!-- <el-button
@@ -139,6 +143,7 @@
 <script>
 // import { fetchData } from '../../api/index';
 import axios from '../../utils/request';
+import API from '../../api';
 
 export default {
     name: 'cars',
@@ -198,7 +203,7 @@ export default {
         },
         // 获取 easy-mock 的模拟数据
         getData(data) {
-            axios.get('mortage/car/list/',{params: data}).then(res => {
+            axios.get(API.car.list,{params: data}).then(res => {
                 this.tableData = res.data.cars;
                 this.pageTotal = res.data.length;
             });
@@ -217,6 +222,7 @@ export default {
                 .then(() => {
                   this.deleteCar({ids: [row._id]}).then(res => {
                     this.$message.success('删除成功');
+                    this.getData(this.query);
                   });
                 })
                 .catch(() => {});
@@ -260,11 +266,11 @@ export default {
             this.form.images.splice(i, 1);
         },
         inserCar() {
-            console.log(this.form);
-            axios.post('mortage/car/save', this.form).then(res => {
+            axios.post(API.car.save, this.form).then(res => {
                 console.log(res);
             }).finally(() => {
               this.insertCarModal = false;
+              this.getData(this.query);
             });
         },
         upSuccess(res, file, fileList) {
@@ -273,7 +279,7 @@ export default {
             });
         },
         deleteCar(ids) {
-          return axios.post('/mortage/car/delete', ids);
+          return axios.post(API.car.delete, ids);
         }
     }
 };
